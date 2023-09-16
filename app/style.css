@@ -4,9 +4,13 @@ html, body {
   padding: 0;
   width: 100%;
   box-sizing: border-box;
+  max-width: 100vw;
   min-width: 320px;
   min-height: 100vh;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 :root {
@@ -23,6 +27,37 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  padding: 1em;
+  width: 100%;
+  background-color: #EF5350;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#main {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 11.5em;
+}
+
+.gameInfo {
+  display: flex;
+  /* justify-content: space-around;
+  align-items: center; */
+  flex-wrap: wrap;
+}
+
+.gameText {
+  flex: 1;
+  flex-basis: calc(5% - 1em); /* Set the maximum width of each item */
+  margin: 1em; /* Add spacing between items */
+  
 }
 
 a {

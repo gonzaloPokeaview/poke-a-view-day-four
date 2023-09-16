@@ -4,32 +4,32 @@ const css = (element, style) => {
 }
 
 const body = document.body;
+const header = document.createElement('header');
+const main = document.createElement('section');
+main.id = 'main';
 const logo = document.createElement('img');
 logo.src = `logo.png`
 logo.className = 'logoImage'
-
-css (logo, {
-  // 'width': '100%',
-  'display': 'flex',
-  'justify-content': 'center'
-})
-body.append(logo);
+const siteInfo = document.createElement('article');
+const siteInfoText = document.createElement('h2');
+siteInfoText.textContent = 'Come and find out which of the Nintendo Pokémon games your favorite Pokémon was featured in!'
+siteInfo.append(siteInfoText);
+header.append(logo, siteInfo);
+body.append(header, main);
 const getAllPokemon = async () => {
   try {
-    // Step 1: Perform the initial fetch to get an array of data
-    const allResponse = await fetch('https://pokeapi.co/api/v2/pokemon/');
+    const allResponse = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0');
     const allData = await allResponse.json();
     
 
-    const fetchPokeData = async (item) => {
+    const fetchPokeData = async (item , i) => {
       const pokeDataResponse = await fetch(item);
       const pokeData = await pokeDataResponse.json();
-      // console.log(pokeData);
       const pokeBox = document.createElement('div');
-      const name = document.createElement('h2');
+      const name = document.createElement('h3');
       const sprite = document.createElement('img');
       const button = document.createElement('input');
-      name.innerText = pokeData.name;
+      name.textContent =`${pokeData.name} #${i+1}`;
       sprite.src = `${pokeData.sprites.other['official-artwork']['front_default']}`;
       sprite.alt = `picture of ${name}`;
       button.value = `More info`;
@@ -37,59 +37,70 @@ const getAllPokemon = async () => {
       button.id= `${pokeData.name}Button`
       pokeBox.append(name, sprite, button );
       const card = document.createElement('div');
+      const gameInfo = document.createElement('div');
+      gameInfo.id = `${pokeData.name}GameInfo`;
+      gameInfo.className = `gameInfo`;
       card.className = `${pokeData.name}Card`;
       card.textContent = `${pokeData.name} is a pokemon that can be found in the Following version of the Pokemon games:`;
       card.style.display = 'none'; 
-      
-      body.append(card);
+      card.append(gameInfo);
+      main.append(card);
 
       button.addEventListener('click', e => {
-        e.preventDefault()
-        const cardClass = document.getElementsByClassName(`${pokeData.name}Card`)
+        e.preventDefault();
         if(e.target.id === `${pokeData.name}Button`){
+          
+          // e.target.clicked = false;
+          console.log(e);
           if (card.style.display === 'none') {
             card.style.display = 'block';
             css (card, {
               'color': 'blue',
               'background-color': '#F0F8FF',
-              'padding': '10px',
+              'padding': '1em',
               'margin': '1em',
-              'width': '80%',
+              // 'width': '80%',
               'border-radius': '1em'
-            })
+            })            
             button.value = `Close`;
-            pokeData.game_indices.forEach(async (item) => {
-              // console.log(item.version.name);
-              const game = document.createElement('p')
-              game.textContent = item.version.name;
-              card.append(game);
-            })
-            console.log(pokeData.game_indices);
-            card.append(name, button, sprite);
+            console.log(gameInfo)
+            if (!e.target.checked){
+              pokeData.game_indices.forEach(async (item) => {
+                const game = document.createElement('p')
+                game.className = `gameText`;
+                game.textContent = item.version.name;
+                gameInfo.append(game);
+              })
+              e.target.checked = true;
+            }
             
+          
             
-            
+            // console.log(pokeData.game_indices);
+            card.append(button, name, sprite);
           } else {
             card.style.display = 'none';
+            button.value = `More info`;
+            // gameInfo.remove();
             pokeBox.append(name, sprite, button );
           };
         };
       });
-      body.appendChild(pokeBox);
+      main.appendChild(pokeBox);
       css (pokeBox, {
         'color': 'blue',
         'background-color': 'coral',
         'padding': '10px',
         'margin': '1em',
-        'width': '10rem',
+        // 'width': '10rem',
         'border-radius': '1em'
       })
       css(sprite,{
         'width':'300px'
       })
     }
-    allData.results.forEach(async (item) => {
-      await fetchPokeData(item.url);
+    allData.results.forEach(async (item, i) => {
+      await fetchPokeData(item.url, i);
     });
   } catch (error) {
     console.error('Error:', error);
