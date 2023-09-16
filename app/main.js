@@ -24,7 +24,7 @@ const getAllPokemon = async () => {
     const fetchPokeData = async (item) => {
       const pokeDataResponse = await fetch(item);
       const pokeData = await pokeDataResponse.json();
-      console.log(pokeData);
+      // console.log(pokeData);
       const pokeBox = document.createElement('div');
       const name = document.createElement('h2');
       const sprite = document.createElement('img');
@@ -36,16 +36,13 @@ const getAllPokemon = async () => {
       button.type = 'submit'
       button.id= `${pokeData.name}Button`
       pokeBox.append(name, sprite, button );
-      // const moreInfo = body.querySelector(`#${pokeData.name}Button`)
-      
-      
       const card = document.createElement('div');
       card.className = `${pokeData.name}Card`;
       card.textContent = `${pokeData.name} is a pokemon that can be found in the Following version of the Pokemon games:`;
-
-      card.style.display = 'none'; // Initially hide the card
+      card.style.display = 'none'; 
       
-      body.append(card)
+      body.append(card);
+
       button.addEventListener('click', e => {
         e.preventDefault()
         const cardClass = document.getElementsByClassName(`${pokeData.name}Card`)
@@ -60,8 +57,9 @@ const getAllPokemon = async () => {
               'width': '80%',
               'border-radius': '1em'
             })
+            button.value = `Close`;
             pokeData.game_indices.forEach(async (item) => {
-              console.log(item.version.name);
+              // console.log(item.version.name);
               const game = document.createElement('p')
               game.textContent = item.version.name;
               card.append(game);
